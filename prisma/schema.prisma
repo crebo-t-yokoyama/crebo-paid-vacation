@@ -1,70 +1,65 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("POSTGRES_PRISMA_URL")
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
   directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
 model MEmployee {
-  employeeCd      String   @id @map("employee_cd")
-  name            String?
-  kana            String?
-  email           String   @unique @map("email")
-  joinDate        DateTime @map("join_date")
-  insertUser      String   @map("insert_user")
-  insertDatetime  DateTime @map("insert_datetime")
-  updateUser      String   @map("update_user")
-  updateDatetime  DateTime @map("update_datetime")
+  employeeCode    String             @id @map("employee_code")
+  email           String             @unique
+  name            String
+  joinDate        DateTime           @map("join_date")
+  insertUser      String             @default("SYSTEM") @map("insert_user")
+  insertDatetime  DateTime           @default(now()) @map("insert_datetime")
+  updateUser      String             @default("SYSTEM") @map("update_user")
+  updateDatetime  DateTime           @default(now()) @map("update_datetime")
   vacationDays    TVacationDays[]
-  vacationHistory TVacationAcquisitionHistory[]
+  vacationHistory TVacationHistory[]
 
   @@map("m_employee")
 }
 
 model MVacationDays {
-  employmentYears Decimal  @id @map("employment_years")
-  grantDays       Int      @default(10) @map("grant_days")
-  insertUser      String   @map("insert_user")
-  insertDatetime  DateTime @map("insert_datetime")
-  updateUser      String   @map("update_user")
-  updateDatetime  DateTime @map("update_datetime")
+  employmentYears Decimal  @id @map("employment_years") @db.Decimal(3, 1)
+  grantDays       Int      @map("grant_days")
+  insertUser      String   @default("SYSTEM") @map("insert_user")
+  insertDatetime  DateTime @default(now()) @map("insert_datetime")
+  updateUser      String   @default("SYSTEM") @map("update_user")
+  updateDatetime  DateTime @default(now()) @map("update_datetime")
 
   @@map("m_vacation_days")
 }
 
 model TVacationDays {
-  employeeCd      String   @map("employee_cd")
-  employmentYears Decimal  @map("employment_years")
-  remainingDays   Decimal  @default(0) @map("remaining_days")
-  insertUser      String   @map("insert_user")
-  insertDatetime  DateTime @map("insert_datetime")
-  updateUser      String   @map("update_user")
-  updateDatetime  DateTime @map("update_datetime")
-  employee        MEmployee @relation(fields: [employeeCd], references: [employeeCd])
+  employeeCode    String    @map("employee_code")
+  employmentYears Decimal   @map("employment_years") @db.Decimal(3, 1)
+  remainingDays   Decimal   @default(0) @map("remaining_days") @db.Decimal(3, 1)
+  insertUser      String    @default("SYSTEM") @map("insert_user")
+  insertDatetime  DateTime  @default(now()) @map("insert_datetime")
+  updateUser      String    @default("SYSTEM") @map("update_user")
+  updateDatetime  DateTime  @default(now()) @map("update_datetime")
+  employee        MEmployee @relation(fields: [employeeCode], references: [employeeCode])
 
-  @@id([employeeCd, employmentYears])
+  @@id([employeeCode, employmentYears])
   @@map("t_vacation_days")
 }
 
-model TVacationAcquisitionHistory {
-  employeeCd      String   @map("employee_cd")
-  acquisitionDate DateTime @map("acquisition_date")
-  employmentYears Decimal? @map("employment_years")
-  insertUser      String   @map("insert_user")
-  insertDatetime  DateTime @map("insert_datetime")
-  updateUser      String   @map("update_user")
-  updateDatetime  DateTime @map("update_datetime")
-  employee        MEmployee @relation(fields: [employeeCd], references: [employeeCd])
+model TVacationHistory {
+  employeeCode    String    @map("employee_code")
+  acquisitionDate DateTime  @map("acquisition_date")
+  employmentYears Decimal   @map("employment_years") @db.Decimal(3, 1)
+  halfFlg         Boolean   @default(false) @map("half_flg")
+  delFlg          Boolean   @default(false) @map("del_flg")
+  insertUser      String    @default("SYSTEM") @map("insert_user")
+  insertDatetime  DateTime  @default(now()) @map("insert_datetime")
+  updateUser      String    @default("SYSTEM") @map("update_user")
+  updateDatetime  DateTime  @default(now()) @map("update_datetime")
+  employee        MEmployee @relation(fields: [employeeCode], references: [employeeCode])
 
-  @@id([employeeCd, acquisitionDate])
-  @@map("t_vacation_acquisition_history")
+  @@id([employeeCode, acquisitionDate])
+  @@map("t_vacation_history")
 }
