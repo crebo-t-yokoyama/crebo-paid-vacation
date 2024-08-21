@@ -7,9 +7,9 @@ import {
   StackDivider,
   Flex,
 } from "@chakra-ui/react";
-import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
+import { useFetchQuery } from "@/api/db/fetch";
 import { DatePicker } from "@/components/datepicker";
 import { HistoryModal } from "@/features/history";
 
@@ -18,21 +18,13 @@ const targetEmail = "yokoyama@crebo.co.jp";
 export const TopPage = () => {
   const [startDate, setStartDate] = useState(new Date());
 
-  const { data, isLoading, refetch } = useQuery({
-    queryKey: ["fetch"],
-    queryFn: async () => {
-      const res = await fetch("/api/db/fetch", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: targetEmail }),
-      });
-      return res.json();
-    },
-  });
+  const { data, isLoading, refetch } = useFetchQuery(targetEmail, {});
 
   useEffect(() => {
     if (data) {
-      console.log(data);
+      console.log(data.email);
+      console.log(data.vacationDays);
+      const date = data.joinDate;
     }
   }, [data]);
 

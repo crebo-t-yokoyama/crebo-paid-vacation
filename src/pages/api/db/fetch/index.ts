@@ -5,6 +5,9 @@ export default async function handle(req, res) {
 
   const result = await prisma.mEmployee.findUnique({
     where: { email },
+    include: {
+      vacationDays: true,
+    },
   });
   // レスポンスとして、JSON形式で返す
   res.json(result);
