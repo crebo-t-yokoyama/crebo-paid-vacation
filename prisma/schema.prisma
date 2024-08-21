@@ -10,6 +10,61 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("POSTGRES_PRISMA_URL")
   directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+model MEmployee {
+  employeeCd      String   @id @map("employee_cd")
+  name            String?
+  kana            String?
+  email           String   @unique @map("email")
+  joinDate        DateTime @map("join_date")
+  insertUser      String   @map("insert_user")
+  insertDatetime  DateTime @map("insert_datetime")
+  updateUser      String   @map("update_user")
+  updateDatetime  DateTime @map("update_datetime")
+  vacationDays    TVacationDays[]
+  vacationHistory TVacationAcquisitionHistory[]
+
+  @@map("m_employee")
+}
+
+model MVacationDays {
+  employmentYears Decimal  @id @map("employment_years")
+  grantDays       Int      @default(10) @map("grant_days")
+  insertUser      String   @map("insert_user")
+  insertDatetime  DateTime @map("insert_datetime")
+  updateUser      String   @map("update_user")
+  updateDatetime  DateTime @map("update_datetime")
+
+  @@map("m_vacation_days")
+}
+
+model TVacationDays {
+  employeeCd      String   @map("employee_cd")
+  employmentYears Decimal  @map("employment_years")
+  remainingDays   Decimal  @default(0) @map("remaining_days")
+  insertUser      String   @map("insert_user")
+  insertDatetime  DateTime @map("insert_datetime")
+  updateUser      String   @map("update_user")
+  updateDatetime  DateTime @map("update_datetime")
+  employee        MEmployee @relation(fields: [employeeCd], references: [employeeCd])
+
+  @@id([employeeCd, employmentYears])
+  @@map("t_vacation_days")
+}
+
+model TVacationAcquisitionHistory {
+  employeeCd      String   @map("employee_cd")
+  acquisitionDate DateTime @map("acquisition_date")
+  employmentYears Decimal? @map("employment_years")
+  insertUser      String   @map("insert_user")
+  insertDatetime  DateTime @map("insert_datetime")
+  updateUser      String   @map("update_user")
+  updateDatetime  DateTime @map("update_datetime")
+  employee        MEmployee @relation(fields: [employeeCd], references: [employeeCd])
+
+  @@id([employeeCd, acquisitionDate])
+  @@map("t_vacation_acquisition_history")
 }
