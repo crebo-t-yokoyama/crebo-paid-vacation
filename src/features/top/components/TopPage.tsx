@@ -7,13 +7,34 @@ import {
   StackDivider,
   Flex,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 
 import { DatePicker } from "@/components/datepicker";
 import { HistoryModal } from "@/features/history";
 
+const targetEmail = "yokoyama@crebo.co.jp";
+
 export const TopPage = () => {
   const [startDate, setStartDate] = useState(new Date());
+
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: ["fetch"],
+    queryFn: async () => {
+      const res = await fetch("/api/db/fetch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: targetEmail }),
+      });
+      return res.json();
+    },
+  });
+
+  useEffect(() => {
+    if (data) {
+      console.log(data);
+    }
+  }, [data]);
 
   return (
     <Stack w="full" p={4}>
