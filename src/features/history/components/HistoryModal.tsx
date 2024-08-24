@@ -20,6 +20,7 @@ import {
 import { useState } from "react";
 
 import { useCancelMutation } from "@/api/db/cancel";
+import { LoadingOverlay } from "@/components/overlay";
 import { useWindowSize } from "@/hooks";
 
 type HistoryModalProps = {
@@ -60,6 +61,7 @@ export const HistoryModal = (props: HistoryModalProps) => {
 
   return (
     <>
+      <LoadingOverlay isLoading={cancelMutation.isPending} />
       <IconButton
         colorScheme="teal"
         aria-label="History"
