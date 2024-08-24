@@ -6,7 +6,9 @@ import {
   Stack,
   StackDivider,
   Flex,
+  useToast,
 } from "@chakra-ui/react";
+import { AxiosError } from "axios";
 import dayjs from "dayjs";
 import ja from "dayjs/locale/ja";
 import { useState } from "react";
@@ -22,6 +24,8 @@ const targetEmail = "yokoyama@crebo.co.jp";
 dayjs.locale(ja);
 
 export const TopPage = () => {
+  const toast = useToast();
+
   const [startDate, setStartDate] = useState(new Date());
 
   const { data, isFetching, refetch } = useFetchQuery(targetEmail, {});
@@ -35,7 +39,26 @@ export const TopPage = () => {
         employeeCode: data?.employeeCode ?? "",
         halfFlg,
       })
-      .then(() => refetch());
+      .then(() => {
+        refetch();
+        toast({
+          title: `${halfFlg ? "半休" : "全休"}を取得しました`,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "top-right",
+        });
+      })
+      .catch(({ response }: AxiosError<{ code: string; message: string }>) => {
+        toast({
+          title: response?.data?.code ?? "",
+          description: response?.data?.message ?? "",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top-right",
+        });
+      });
   };
 
   return (

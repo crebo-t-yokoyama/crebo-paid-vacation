@@ -16,6 +16,7 @@ import {
   Thead,
   Tr,
   IconButton,
+  useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
 
@@ -37,6 +38,8 @@ type HistoryModalProps = {
 export const HistoryModal = (props: HistoryModalProps) => {
   const { vacationHistory, employmentYears, refetch } = props;
 
+  const toast = useToast();
+
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const { width, height } = useWindowSize();
@@ -56,7 +59,16 @@ export const HistoryModal = (props: HistoryModalProps) => {
   const cancel = (id: number, employeeCode: string) => {
     cancelMutation
       .mutateAsync({ id: id, employeeCode: employeeCode })
-      .then(() => refetch());
+      .then(() => {
+        refetch();
+        toast({
+          title: `消化履歴を削除しました`,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "top-right",
+        });
+      });
   };
 
   return (
