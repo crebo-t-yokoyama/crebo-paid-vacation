@@ -30,10 +30,11 @@ type HistoryModalProps = {
     acquisitionDate: string;
     halfFlg: boolean;
   }[];
+  refetch: () => void;
 };
 
 export const HistoryModal = (props: HistoryModalProps) => {
-  const { vacationHistory, employmentYears } = props;
+  const { vacationHistory, employmentYears, refetch } = props;
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -52,7 +53,9 @@ export const HistoryModal = (props: HistoryModalProps) => {
   const cancelMutation = useCancelMutation();
 
   const cancel = (id: number, employeeCode: string) => {
-    cancelMutation.mutateAsync({ id: id, employeeCode: employeeCode });
+    cancelMutation
+      .mutateAsync({ id: id, employeeCode: employeeCode })
+      .then(() => refetch());
   };
 
   return (

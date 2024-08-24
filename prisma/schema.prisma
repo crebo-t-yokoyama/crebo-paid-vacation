@@ -12,6 +12,7 @@ model MEmployee {
   employeeCode   String          @id @map("employee_code")
   email          String          @unique
   name           String
+  manageFlg      Boolean         @default(false) @map("manage_flg")
   joinDate       DateTime        @map("join_date")
   insertUser     String          @default("SYSTEM") @map("insert_user")
   insertDatetime DateTime        @default(now()) @map("insert_datetime")

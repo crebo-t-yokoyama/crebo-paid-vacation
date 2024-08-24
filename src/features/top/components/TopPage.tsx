@@ -28,11 +28,13 @@ export const TopPage = () => {
   const acquisitionMutation = useAcquisitionMutation();
 
   const acquisition = (halfFlg: boolean) => {
-    acquisitionMutation.mutateAsync({
-      acquisitionDate: startDate.toLocaleString(),
-      employeeCode: data?.employeeCode ?? "",
-      halfFlg,
-    });
+    acquisitionMutation
+      .mutateAsync({
+        acquisitionDate: startDate.toLocaleDateString(),
+        employeeCode: data?.employeeCode ?? "",
+        halfFlg,
+      })
+      .then(() => refetch());
   };
 
   return (
@@ -79,6 +81,7 @@ export const TopPage = () => {
                   <HistoryModal
                     employmentYears={x.employmentYears}
                     vacationHistory={x.vacationHistory}
+                    refetch={refetch}
                   />
                 </Flex>
               </>
