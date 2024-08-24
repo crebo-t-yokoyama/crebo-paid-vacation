@@ -9,16 +9,15 @@ datasource db {
 }
 
 model MEmployee {
-  employeeCode    String             @id @map("employee_code")
-  email           String             @unique
-  name            String
-  joinDate        DateTime           @map("join_date")
-  insertUser      String             @default("SYSTEM") @map("insert_user")
-  insertDatetime  DateTime           @default(now()) @map("insert_datetime")
-  updateUser      String             @default("SYSTEM") @map("update_user")
-  updateDatetime  DateTime           @default(now()) @map("update_datetime")
-  vacationDays    TVacationDays[]
-  vacationHistory TVacationHistory[]
+  employeeCode   String          @id @map("employee_code")
+  email          String          @unique
+  name           String
+  joinDate       DateTime        @map("join_date")
+  insertUser     String          @default("SYSTEM") @map("insert_user")
+  insertDatetime DateTime        @default(now()) @map("insert_datetime")
+  updateUser     String          @default("SYSTEM") @map("update_user")
+  updateDatetime DateTime        @default(now()) @map("update_datetime")
+  vacationDays   TVacationDays[]
 
   @@map("m_employee")
 }
@@ -35,31 +34,32 @@ model MVacationDays {
 }
 
 model TVacationDays {
-  employeeCode    String    @map("employee_code")
-  employmentYears Decimal   @map("employment_years") @db.Decimal(3, 1)
-  remainingDays   Decimal   @default(0) @map("remaining_days") @db.Decimal(3, 1)
-  insertUser      String    @default("SYSTEM") @map("insert_user")
-  insertDatetime  DateTime  @default(now()) @map("insert_datetime")
-  updateUser      String    @default("SYSTEM") @map("update_user")
-  updateDatetime  DateTime  @default(now()) @map("update_datetime")
-  employee        MEmployee @relation(fields: [employeeCode], references: [employeeCode])
+  employeeCode    String             @map("employee_code")
+  employmentYears Decimal            @map("employment_years") @db.Decimal(3, 1)
+  remainingDays   Decimal            @default(0) @map("remaining_days") @db.Decimal(3, 1)
+  insertUser      String             @default("SYSTEM") @map("insert_user")
+  insertDatetime  DateTime           @default(now()) @map("insert_datetime")
+  updateUser      String             @default("SYSTEM") @map("update_user")
+  updateDatetime  DateTime           @default(now()) @map("update_datetime")
+  employee        MEmployee          @relation(fields: [employeeCode], references: [employeeCode])
+  vacationHistory TVacationHistory[]
 
   @@id([employeeCode, employmentYears])
   @@map("t_vacation_days")
 }
 
 model TVacationHistory {
-  employeeCode    String    @map("employee_code")
-  acquisitionDate DateTime  @map("acquisition_date")
-  employmentYears Decimal   @map("employment_years") @db.Decimal(3, 1)
-  halfFlg         Boolean   @default(false) @map("half_flg")
-  delFlg          Boolean   @default(false) @map("del_flg")
-  insertUser      String    @default("SYSTEM") @map("insert_user")
-  insertDatetime  DateTime  @default(now()) @map("insert_datetime")
-  updateUser      String    @default("SYSTEM") @map("update_user")
-  updateDatetime  DateTime  @default(now()) @map("update_datetime")
-  employee        MEmployee @relation(fields: [employeeCode], references: [employeeCode])
+  id              Int           @id @default(autoincrement())
+  employeeCode    String        @map("employee_code")
+  acquisitionDate DateTime      @map("acquisition_date")
+  employmentYears Decimal       @map("employment_years") @db.Decimal(3, 1)
+  halfFlg         Boolean       @default(false) @map("half_flg")
+  delFlg          Boolean       @default(false) @map("del_flg")
+  insertUser      String        @default("SYSTEM") @map("insert_user")
+  insertDatetime  DateTime      @default(now()) @map("insert_datetime")
+  updateUser      String        @default("SYSTEM") @map("update_user")
+  updateDatetime  DateTime      @default(now()) @map("update_datetime")
+  vacationDays    TVacationDays @relation(fields: [employeeCode, employmentYears], references: [employeeCode, employmentYears])
 
-  @@id([employeeCode, acquisitionDate])
   @@map("t_vacation_history")
 }

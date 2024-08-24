@@ -21,7 +21,19 @@ import { useState } from "react";
 
 import { useWindowSize } from "@/hooks";
 
-export const HistoryModal = () => {
+type HistoryModalProps = {
+  employmentYears: number;
+  vacationHistory: {
+    id: number;
+    employeeCode: string;
+    acquisitionDate: string;
+    halfFlg: boolean;
+  }[];
+};
+
+export const HistoryModal = (props: HistoryModalProps) => {
+  const { vacationHistory, employmentYears } = props;
+
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const { width, height } = useWindowSize();
@@ -48,7 +60,7 @@ export const HistoryModal = () => {
       <Modal isOpen={isOpen} onClose={onClose} size={size} isCentered>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>2024年度</ModalHeader>
+          <ModalHeader>{`${employmentYears}年目分`}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <TableContainer overflowY={"scroll"} maxH={height * 0.8}>
@@ -61,10 +73,10 @@ export const HistoryModal = () => {
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {[...Array(20)].map((_, i) => (
+                  {vacationHistory.map((x, i) => (
                     <Tr key={i}>
-                      <Td>2022/05/12</Td>
-                      <Td>全休</Td>
+                      <Td>{x.acquisitionDate}</Td>
+                      <Td>{x.halfFlg ? "半休" : "全休"}</Td>
                       <Td isNumeric>
                         <Button colorScheme="teal" size="sm">
                           削除

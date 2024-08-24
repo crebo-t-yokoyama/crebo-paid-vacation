@@ -3,7 +3,23 @@ import axios, { AxiosError } from "axios";
 
 const fetchKeys = { all: ["fetch"] as const };
 
-type FetchResponse = MEmployee;
+type FetchResponse = {
+  employeeCode: string;
+  name: string;
+  joinDate: string;
+  updateDate: string;
+  vacationDays: {
+    employeeCode: string;
+    employmentYears: number;
+    remainingDays: number;
+    vacationHistory: {
+      id: number;
+      employeeCode: string;
+      acquisitionDate: string;
+      halfFlg: boolean;
+    }[];
+  }[];
+};
 
 export const useFetchQuery = <TData = FetchResponse>(
   email: string,

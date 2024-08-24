@@ -1,5 +1,5 @@
 type ISO8601DateTime = string;
-type Decimal = number;
+type Decimal = string;
 
 type MEmployee = {
   employeeCode: string;

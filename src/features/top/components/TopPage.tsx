@@ -7,7 +7,9 @@ import {
   StackDivider,
   Flex,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import dayjs from "dayjs";
+import ja from "dayjs/locale/ja";
+import { useState } from "react";
 
 import { useFetchQuery } from "@/api/db/fetch";
 import { DatePicker } from "@/components/datepicker";
@@ -15,18 +17,12 @@ import { HistoryModal } from "@/features/history";
 
 const targetEmail = "yokoyama@crebo.co.jp";
 
+dayjs.locale(ja);
+
 export const TopPage = () => {
   const [startDate, setStartDate] = useState(new Date());
 
   const { data, isLoading, refetch } = useFetchQuery(targetEmail, {});
-
-  useEffect(() => {
-    if (data) {
-      console.log(data.email);
-      console.log(data.vacationDays);
-      const date = data.joinDate;
-    }
-  }, [data]);
 
   return (
     <Stack w="full" p={4}>
@@ -35,11 +31,11 @@ export const TopPage = () => {
           <Stack divider={<StackDivider />} spacing="4">
             <Flex justify="space-between" alignItems="center">
               <Heading size="md">入社年月</Heading>
-              <Heading size="md">2020/04</Heading>
+              <Heading size="md">{data?.joinDate}</Heading>
             </Flex>
             <Flex justify="space-between" alignItems="center">
               <Heading size="md">有休更新日</Heading>
-              <Heading size="md">10/01</Heading>
+              <Heading size="md">{data?.updateDate}</Heading>
             </Flex>
           </Stack>
         </CardBody>
@@ -49,7 +45,11 @@ export const TopPage = () => {
           <Flex justify="space-between" alignItems="center">
             <Heading size="md">残りの有休日数</Heading>
             <Heading size="2xl" textAlign="end">
-              17日
+              {data?.vacationDays.reduce(
+                (r: number, c) => r + c.remainingDays,
+                0
+              ) ?? 0}
+              日
             </Heading>
           </Flex>
         </CardBody>
@@ -60,16 +60,18 @@ export const TopPage = () => {
             付与年度別残りの有休日数
           </Heading>
           <Stack divider={<StackDivider />} spacing="2">
-            <Flex justify="space-between" alignItems="center">
-              <Heading size="md">2023年度</Heading>
-              <Heading size="md">14日</Heading>
-              <HistoryModal />
-            </Flex>
-            <Flex justify="space-between" alignItems="center">
-              <Heading size="md">2022年度</Heading>
-              <Heading size="md">3日</Heading>
-              <HistoryModal />
-            </Flex>
+            {data?.vacationDays.map((x, i) => (
+              <>
+                <Flex key={i} justify="space-between" alignItems="center">
+                  <Heading size="md">{`${x.employmentYears}年目分`}</Heading>
+                  <Heading size="md">{`${x.remainingDays}日`}</Heading>
+                  <HistoryModal
+                    employmentYears={x.employmentYears}
+                    vacationHistory={x.vacationHistory}
+                  />
+                </Flex>
+              </>
+            ))}
           </Stack>
         </CardBody>
       </Card>
