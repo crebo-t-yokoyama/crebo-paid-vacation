@@ -42,13 +42,14 @@ export default async function handle(req, res) {
 
     const first = tVacationDays[0];
     const firstEmpYears = Number(first.employmentYears);
+    const firstRemainDays = Number(first.remainingDays);
 
     // 古い年次の残数が0.5 && 全休取得
-    if (Number(first.remainingDays) < 1 && !halfFlg) {
+    if (firstRemainDays < 1 && !halfFlg) {
       // 古い年次 -0.5
       await updateVacationDays(
         firstEmpYears,
-        Number(first.remainingDays) - 0.5,
+        firstRemainDays - 0.5,
         employeeCode
       );
 
@@ -60,6 +61,7 @@ export default async function handle(req, res) {
       );
 
       // 新しい年次 -0.5
+      // 残日数不足チェックを通過しているので2個目は存在
       const second = tVacationDays[1];
 
       const secondEmpYears = Number(second.employmentYears);
@@ -80,7 +82,7 @@ export default async function handle(req, res) {
       // その他は通常ケース
       await updateVacationDays(
         firstEmpYears,
-        Number(first.remainingDays) - days,
+        firstRemainDays - days,
         employeeCode
       );
 
