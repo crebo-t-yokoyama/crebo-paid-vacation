@@ -11,6 +11,7 @@ import dayjs from "dayjs";
 import ja from "dayjs/locale/ja";
 import { useState } from "react";
 
+import { useAcquisitionMutation } from "@/api/db/acquisition";
 import { useFetchQuery } from "@/api/db/fetch";
 import { DatePicker } from "@/components/datepicker";
 import { HistoryModal } from "@/features/history";
@@ -23,6 +24,16 @@ export const TopPage = () => {
   const [startDate, setStartDate] = useState(new Date());
 
   const { data, isLoading, refetch } = useFetchQuery(targetEmail, {});
+
+  const acquisitionMutation = useAcquisitionMutation();
+
+  const acquisition = (halfFlg: boolean) => {
+    acquisitionMutation.mutateAsync({
+      acquisitionDate: startDate.toLocaleString(),
+      employeeCode: data?.employeeCode ?? "",
+      halfFlg,
+    });
+  };
 
   return (
     <Stack w="full" p={4}>
@@ -84,10 +95,20 @@ export const TopPage = () => {
           calendarStartDay={1}
         />
       </Flex>
-      <Button colorScheme="teal" mt={2} h={12}>
+      <Button
+        colorScheme="teal"
+        mt={2}
+        h={12}
+        onClick={() => acquisition(false)}
+      >
         全休取得
       </Button>
-      <Button colorScheme="teal" mt={2} h={12}>
+      <Button
+        colorScheme="teal"
+        mt={2}
+        h={12}
+        onClick={() => acquisition(true)}
+      >
         半休取得
       </Button>
     </Stack>

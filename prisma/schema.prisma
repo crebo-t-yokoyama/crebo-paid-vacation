@@ -16,7 +16,7 @@ model MEmployee {
   insertUser     String          @default("SYSTEM") @map("insert_user")
   insertDatetime DateTime        @default(now()) @map("insert_datetime")
   updateUser     String          @default("SYSTEM") @map("update_user")
-  updateDatetime DateTime        @default(now()) @map("update_datetime")
+  updateDatetime DateTime        @updatedAt @map("update_datetime")
   vacationDays   TVacationDays[]
 
   @@map("m_employee")
@@ -28,7 +28,7 @@ model MVacationDays {
   insertUser      String   @default("SYSTEM") @map("insert_user")
   insertDatetime  DateTime @default(now()) @map("insert_datetime")
   updateUser      String   @default("SYSTEM") @map("update_user")
-  updateDatetime  DateTime @default(now()) @map("update_datetime")
+  updateDatetime  DateTime @updatedAt @map("update_datetime")
 
   @@map("m_vacation_days")
 }
@@ -37,10 +37,11 @@ model TVacationDays {
   employeeCode    String             @map("employee_code")
   employmentYears Decimal            @map("employment_years") @db.Decimal(3, 1)
   remainingDays   Decimal            @default(0) @map("remaining_days") @db.Decimal(3, 1)
+  expiredFlg      Boolean            @default(false) @map("expired_flg")
   insertUser      String             @default("SYSTEM") @map("insert_user")
   insertDatetime  DateTime           @default(now()) @map("insert_datetime")
   updateUser      String             @default("SYSTEM") @map("update_user")
-  updateDatetime  DateTime           @default(now()) @map("update_datetime")
+  updateDatetime  DateTime           @updatedAt @map("update_datetime")
   employee        MEmployee          @relation(fields: [employeeCode], references: [employeeCode])
   vacationHistory TVacationHistory[]
 
@@ -58,7 +59,7 @@ model TVacationHistory {
   insertUser      String        @default("SYSTEM") @map("insert_user")
   insertDatetime  DateTime      @default(now()) @map("insert_datetime")
   updateUser      String        @default("SYSTEM") @map("update_user")
-  updateDatetime  DateTime      @default(now()) @map("update_datetime")
+  updateDatetime  DateTime      @updatedAt @map("update_datetime")
   vacationDays    TVacationDays @relation(fields: [employeeCode, employmentYears], references: [employeeCode, employmentYears])
 
   @@map("t_vacation_history")

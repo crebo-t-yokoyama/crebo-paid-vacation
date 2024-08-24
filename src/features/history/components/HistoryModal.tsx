@@ -19,6 +19,7 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 
+import { useCancelMutation } from "@/api/db/cancel";
 import { useWindowSize } from "@/hooks";
 
 type HistoryModalProps = {
@@ -46,6 +47,12 @@ export const HistoryModal = (props: HistoryModalProps) => {
 
     setSize(bp);
     onOpen();
+  };
+
+  const cancelMutation = useCancelMutation();
+
+  const cancel = (id: number, employeeCode: string) => {
+    cancelMutation.mutateAsync({ id: id, employeeCode: employeeCode });
   };
 
   return (
@@ -78,7 +85,11 @@ export const HistoryModal = (props: HistoryModalProps) => {
                       <Td>{x.acquisitionDate}</Td>
                       <Td>{x.halfFlg ? "半休" : "全休"}</Td>
                       <Td isNumeric>
-                        <Button colorScheme="teal" size="sm">
+                        <Button
+                          colorScheme="teal"
+                          size="sm"
+                          onClick={() => cancel(x.id, x.employeeCode)}
+                        >
                           削除
                         </Button>
                       </Td>

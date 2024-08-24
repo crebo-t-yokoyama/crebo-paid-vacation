@@ -12,6 +12,7 @@ export default async function handle(req, res) {
     where: { email },
     include: {
       vacationDays: {
+        where: { expiredFlg: false },
         orderBy: { employmentYears: "desc" },
         take: 2,
         include: {
