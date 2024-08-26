@@ -46,13 +46,13 @@ const vacationDays = [
   {
     employeeCode: "EMP001",
     employmentYears: 1.5,
-    remainingDays: 3,
+    remainingDays: 2,
     expiredFlg: false,
   },
   {
     employeeCode: "EMP001",
     employmentYears: 2.5,
-    remainingDays: 11,
+    remainingDays: 3,
     expiredFlg: false,
   },
   {

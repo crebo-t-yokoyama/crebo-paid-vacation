@@ -10,7 +10,12 @@ export default async function handle(req, res) {
     const { acquisitionDate, employeeCode, halfFlg } = req.body;
 
     // acquisitionDateを解析してISO 8601形式に変換
-    const parsedDate = dayjs(acquisitionDate, "YYYY/M/D").toISOString();
+    const parsedDate = dayjs(acquisitionDate, "YYYY/M/D")
+      .hour(9)
+      .minute(0)
+      .second(0)
+      .millisecond(0)
+      .toISOString();
 
     // 年次別取得
     const tVacationDays = await prisma.tVacationDays.findMany({

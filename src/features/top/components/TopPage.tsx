@@ -100,17 +100,15 @@ export const TopPage = () => {
             </Heading>
             <Stack divider={<StackDivider />} spacing="2">
               {data?.vacationDays.map((x, i) => (
-                <>
-                  <Flex key={i} justify="space-between" alignItems="center">
-                    <Heading size="md">{`${x.employmentYears}年目分`}</Heading>
-                    <Heading size="md">{`${x.remainingDays}日`}</Heading>
-                    <HistoryModal
-                      employmentYears={x.employmentYears}
-                      vacationHistory={x.vacationHistory}
-                      refetch={refetch}
-                    />
-                  </Flex>
-                </>
+                <Flex key={i} justify="space-between" alignItems="center">
+                  <Heading size="md">{`${x.employmentYears}年目分`}</Heading>
+                  <Heading size="md">{`${x.remainingDays}日`}</Heading>
+                  <HistoryModal
+                    employmentYears={x.employmentYears}
+                    vacationHistory={x.vacationHistory}
+                    refetch={refetch}
+                  />
+                </Flex>
               ))}
             </Stack>
           </CardBody>
