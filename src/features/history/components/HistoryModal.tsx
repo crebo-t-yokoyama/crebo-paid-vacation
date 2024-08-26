@@ -97,21 +97,29 @@ export const HistoryModal = (props: HistoryModalProps) => {
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {vacationHistory.map((x, i) => (
-                    <Tr key={i}>
-                      <Td>{x.acquisitionDate}</Td>
-                      <Td>{x.halfFlg ? "半休" : "全休"}</Td>
-                      <Td isNumeric>
-                        <Button
-                          colorScheme="teal"
-                          size="sm"
-                          onClick={() => cancel(x.id, x.employeeCode)}
-                        >
-                          削除
-                        </Button>
-                      </Td>
+                  {vacationHistory.length > 0 ? (
+                    vacationHistory.map((x, i) => (
+                      <Tr key={i}>
+                        <Td>{x.acquisitionDate}</Td>
+                        <Td>{x.halfFlg ? "半休" : "全休"}</Td>
+                        <Td isNumeric>
+                          <Button
+                            colorScheme="teal"
+                            size="sm"
+                            onClick={() => cancel(x.id, x.employeeCode)}
+                          >
+                            削除
+                          </Button>
+                        </Td>
+                      </Tr>
+                    ))
+                  ) : (
+                    <Tr>
+                      <Td>No data...</Td>
+                      <Td></Td>
+                      <Td></Td>
                     </Tr>
-                  ))}
+                  )}
                 </Tbody>
               </Table>
             </TableContainer>
