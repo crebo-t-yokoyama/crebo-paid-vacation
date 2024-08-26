@@ -8,6 +8,7 @@ import {
   Flex,
   useToast,
 } from "@chakra-ui/react";
+import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import dayjs from "dayjs";
 import ja from "dayjs/locale/ja";
@@ -60,6 +61,21 @@ export const TopPage = () => {
         });
       });
   };
+
+  const updateLeave = async () => {
+    const res = await fetch("/api/db/periodic", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: undefined,
+    });
+
+    return {};
+  };
+
+  const mutation = useMutation({
+    mutationFn: () => updateLeave(),
+    onSuccess: refetch,
+  });
 
   return (
     <>
@@ -137,6 +153,16 @@ export const TopPage = () => {
           onClick={() => acquisition(true)}
         >
           半休取得
+        </Button>
+        <Button
+          colorScheme="teal"
+          mt={2}
+          h={12}
+          onClick={() => {
+            mutation.mutateAsync();
+          }}
+        >
+          定期実行テスト
         </Button>
       </Stack>
     </>
