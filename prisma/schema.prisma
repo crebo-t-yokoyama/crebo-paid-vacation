@@ -13,6 +13,7 @@ model MEmployee {
   email          String          @unique
   name           String
   manageFlg      Boolean         @default(false) @map("manage_flg")
+  quitFlg        Boolean         @default(false) @map("quit_flg")
   joinDate       DateTime        @map("join_date")
   insertUser     String          @default("SYSTEM") @map("insert_user")
   insertDatetime DateTime        @default(now()) @map("insert_datetime")
