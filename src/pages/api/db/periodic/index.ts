@@ -9,8 +9,19 @@ export default async function handle(req, res) {
   try {
     // 月一実行処理
 
-    // 1.当月が更新月のユーザー取得
+    // 1.当月が更新月のユーザー取得 強制的に00:00:00:000扱い
     const now = dayjs().hour(0).minute(0).second(0).millisecond(0);
+
+    // cronはUTCで起動
+    // UTCで月末日の15時に起動しないといけない
+    // cronで月末日の指定ができない
+    // 代案として、UTCで28,29,30,31日の15時に起動とする
+    // cron = 0 15 28,29,30,31 * *
+    // 日本時間1日かどうかはここで判断行い、そうでない場合は処理を終了
+    if (now.date() !== 1) {
+      res.json(null);
+      return;
+    }
 
     const mEmployees = await prisma.mEmployee.findMany({
       where: { quitFlg: false },
@@ -23,11 +34,15 @@ export default async function handle(req, res) {
     });
 
     const targetEmps = mEmployees.filter((mEmp) => {
+      // 入社日 JSTに変換しているので 09:00
       const joinDate = dayjs(mEmp.joinDate);
-      const updateDate = joinDate.add(6, "M").year(now.year()).subtract(9, "h");
-      // 1h以内
-      const absDiff = Math.abs(now.diff(updateDate)) < 60 * 60;
-      return absDiff;
+      // 半年後なので +6 month, year設定 ex.YYYY/MM/01 09:00:00
+      let updateDate = joinDate.add(6, "M").year(now.year());
+      // 強制的に00:00:00:000扱い
+      updateDate = updateDate.hour(0).minute(0).second(0).millisecond(0);
+
+      // ミリ秒まで合わせているので===で比較可能
+      return now.diff(updateDate) === 0;
     });
 
     // 2.年次別日数テーブル更新
