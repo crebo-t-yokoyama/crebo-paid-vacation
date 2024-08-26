@@ -13,6 +13,7 @@ export default async function handle(req, res) {
     const now = dayjs().hour(0).minute(0).second(0).millisecond(0);
 
     const mEmployees = await prisma.mEmployee.findMany({
+      where: { quitFlg: false },
       include: {
         vacationDays: {
           where: { expiredFlg: false },
