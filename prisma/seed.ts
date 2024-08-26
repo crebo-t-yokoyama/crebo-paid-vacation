@@ -5,24 +5,94 @@ const prisma = new PrismaClient();
 const employees = [
   {
     employeeCode: "EMP001",
+    email: "kuroki@crebo.co.jp",
+    name: "黒木 健太郎",
+    manageFlg: true,
+    joinDate: new Date("2021-10-01"), // TODO
+  },
+  {
+    employeeCode: "EMP002",
+    email: "iizuka@crebo.co.jp",
+    name: "飯塚 未佐子",
+    manageFlg: true,
+    joinDate: new Date("2021-10-01"), // TODO
+  },
+  {
+    employeeCode: "EMP003",
     email: "yokoyama@crebo.co.jp",
     name: "横山 太軌",
     manageFlg: true,
     joinDate: new Date("2021-10-01"),
   },
   {
-    employeeCode: "EMP002",
-    email: "tanaka@example.com",
-    name: "田中花子",
+    employeeCode: "EMP004",
+    email: "ito@crebo.co.jp",
+    name: "伊藤 俊輔",
     manageFlg: false,
-    joinDate: new Date("2021-04-01"),
+    joinDate: new Date("2021-10-01"), // TODO
   },
   {
-    employeeCode: "EMP003",
-    email: "suzuki@example.com",
-    name: "鈴木一郎",
+    employeeCode: "EMP005",
+    email: "terashima@crebo.co.jp",
+    name: "寺島 康之",
     manageFlg: false,
-    joinDate: new Date("2022-04-01"),
+    joinDate: new Date("2021-10-01"), // TODO
+  },
+  {
+    employeeCode: "EMP006",
+    email: "honda@crebo.co.jp",
+    name: "本多 愛花",
+    manageFlg: false,
+    joinDate: new Date("2024-04-01"),
+  },
+  {
+    employeeCode: "EMP007",
+    email: "ogata@crebo.co.jp",
+    name: "尾形 空",
+    manageFlg: false,
+    joinDate: new Date("2024-09-01"),
+  },
+  {
+    employeeCode: "EMP008",
+    email: "hashimoto@crebo.co.jp",
+    name: "橋本 早都季",
+    manageFlg: false,
+    joinDate: new Date("2021-10-01"), // TODO
+  },
+  {
+    employeeCode: "EMP009",
+    email: "yoshida@crebo.co.jp",
+    name: "吉田 雄樹",
+    manageFlg: false,
+    joinDate: new Date("2021-10-01"), // TODO
+  },
+  {
+    employeeCode: "EMP010",
+    email: "fujimoto@crebo.co.jp",
+    name: "藤本 達也",
+    manageFlg: false,
+    joinDate: new Date("2021-10-01"), // TODO
+  },
+  {
+    employeeCode: "EMP011",
+    email: "fujita@crebo.co.jp",
+    name: "藤田 学",
+    manageFlg: false,
+    joinDate: new Date("2021-10-01"), // TODO
+  },
+  {
+    employeeCode: "EMP012",
+    email: "oka@crebo.co.jp",
+    name: "岡 隆志",
+    manageFlg: false,
+    joinDate: new Date("2024-01-01"),
+  },
+  {
+    employeeCode: "EMP013",
+    email: "kano@crebo.co.jp",
+    name: "加野 大輔",
+    manageFlg: false,
+    joinDate: new Date("2021-10-01"), // TODO
   },
 ];
 
@@ -37,12 +107,6 @@ const vacationDaysMapping = [
 ];
 
 const vacationDays = [
-  {
-    employeeCode: "EMP001",
-    employmentYears: 0.5,
-    remainingDays: 0,
-    expiredFlg: true,
-  },
   {
     employeeCode: "EMP001",
     employmentYears: 1.5,
