@@ -45,6 +45,11 @@ export default async function handle(req, res) {
       return now.diff(updateDate) === 0;
     });
 
+    // 対象ユーザいなければ終了
+    if (targetEmps.length < 1) {
+      res.json(null);
+    }
+
     // 2.年次別日数テーブル更新
     const updateTargetEmp = targetEmps.filter((x) => x.vacationDays.length > 1);
     const updateData = updateTargetEmp.map((emp) => {
