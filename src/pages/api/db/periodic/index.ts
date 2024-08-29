@@ -18,10 +18,10 @@ export default async function handle(req, res) {
     // 代案として、UTCで28,29,30,31日の15時に起動とする
     // cron = 0 15 28,29,30,31 * *
     // 日本時間1日かどうかはここで判断行い、そうでない場合は処理を終了
-    if (now.date() !== 1) {
-      res.json(null);
-      return;
-    }
+    // if (now.date() !== 1) {
+    //   res.json(null);
+    //   return;
+    // }
 
     const mEmployees = await prisma.mEmployee.findMany({
       where: { quitFlg: false },
