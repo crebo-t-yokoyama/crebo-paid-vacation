@@ -16,12 +16,30 @@ import {
   Thead,
   Tr,
   IconButton,
+  useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
 
+import { useCancelMutation } from "@/api/db/cancel";
+import { LoadingOverlay } from "@/components/overlay";
 import { useWindowSize } from "@/hooks";
 
-export const HistoryModal = () => {
+type HistoryModalProps = {
+  employmentYears: number;
+  vacationHistory: {
+    id: number;
+    employeeCode: string;
+    acquisitionDate: string;
+    halfFlg: boolean;
+  }[];
+  refetch: () => void;
+};
+
+export const HistoryModal = (props: HistoryModalProps) => {
+  const { vacationHistory, employmentYears, refetch } = props;
+
+  const toast = useToast();
+
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const { width, height } = useWindowSize();
@@ -36,8 +54,26 @@ export const HistoryModal = () => {
     onOpen();
   };
 
+  const cancelMutation = useCancelMutation();
+
+  const cancel = (id: number, employeeCode: string) => {
+    cancelMutation
+      .mutateAsync({ id: id, employeeCode: employeeCode })
+      .then(() => {
+        refetch();
+        toast({
+          title: `消化履歴を削除しました`,
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+          position: "top-right",
+        });
+      });
+  };
+
   return (
     <>
+      <LoadingOverlay isLoading={cancelMutation.isPending} />
       <IconButton
         colorScheme="teal"
         aria-label="History"
@@ -48,7 +84,7 @@ export const HistoryModal = () => {
       <Modal isOpen={isOpen} onClose={onClose} size={size} isCentered>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>2024年度</ModalHeader>
+          <ModalHeader>{`${employmentYears}年目分`}</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <TableContainer overflowY={"scroll"} maxH={height * 0.8}>
@@ -61,17 +97,29 @@ export const HistoryModal = () => {
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {[...Array(20)].map((_, i) => (
-                    <Tr key={i}>
-                      <Td>2022/05/12</Td>
-                      <Td>全休</Td>
-                      <Td isNumeric>
-                        <Button colorScheme="teal" size="sm">
-                          削除
-                        </Button>
-                      </Td>
+                  {vacationHistory.length > 0 ? (
+                    vacationHistory.map((x, i) => (
+                      <Tr key={i}>
+                        <Td>{x.acquisitionDate}</Td>
+                        <Td>{x.halfFlg ? "半休" : "全休"}</Td>
+                        <Td isNumeric>
+                          <Button
+                            colorScheme="teal"
+                            size="sm"
+                            onClick={() => cancel(x.id, x.employeeCode)}
+                          >
+                            削除
+                          </Button>
+                        </Td>
+                      </Tr>
+                    ))
+                  ) : (
+                    <Tr>
+                      <Td>No data...</Td>
+                      <Td></Td>
+                      <Td></Td>
                     </Tr>
-                  ))}
+                  )}
                 </Tbody>
               </Table>
             </TableContainer>

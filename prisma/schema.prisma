@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
+}
+
+model MEmployee {
+  employeeCode   String          @id @map("employee_code")
+  email          String          @unique
+  name           String
+  manageFlg      Boolean         @default(false) @map("manage_flg")
+  quitFlg        Boolean         @default(false) @map("quit_flg")
+  joinDate       DateTime        @map("join_date")
+  insertUser     String          @default("SYSTEM") @map("insert_user")
+  insertDatetime DateTime        @default(now()) @map("insert_datetime")
+  updateUser     String          @default("SYSTEM") @map("update_user")
+  updateDatetime DateTime        @updatedAt @map("update_datetime")
+  vacationDays   TVacationDays[]
+
+  @@map("m_employee")
+}
+
+model MVacationDays {
+  employmentYears Decimal  @id @map("employment_years") @db.Decimal(3, 1)
+  grantDays       Int      @map("grant_days")
+  insertUser      String   @default("SYSTEM") @map("insert_user")
+  insertDatetime  DateTime @default(now()) @map("insert_datetime")
+  updateUser      String   @default("SYSTEM") @map("update_user")
+  updateDatetime  DateTime @updatedAt @map("update_datetime")
+
+  @@map("m_vacation_days")
+}
+
+model TVacationDays {
+  employeeCode    String             @map("employee_code")
+  employmentYears Decimal            @map("employment_years") @db.Decimal(3, 1)
+  remainingDays   Decimal            @default(0) @map("remaining_days") @db.Decimal(3, 1)
+  expiredFlg      Boolean            @default(false) @map("expired_flg")
+  insertUser      String             @default("SYSTEM") @map("insert_user")
+  insertDatetime  DateTime           @default(now()) @map("insert_datetime")
+  updateUser      String             @default("SYSTEM") @map("update_user")
+  updateDatetime  DateTime           @updatedAt @map("update_datetime")
+  employee        MEmployee          @relation(fields: [employeeCode], references: [employeeCode])
+  vacationHistory TVacationHistory[]
+
+  @@id([employeeCode, employmentYears])
+  @@map("t_vacation_days")
+}
+
+model TVacationHistory {
+  id              Int           @id @default(autoincrement())
+  employeeCode    String        @map("employee_code")
+  acquisitionDate DateTime      @map("acquisition_date")
+  employmentYears Decimal       @map("employment_years") @db.Decimal(3, 1)
+  halfFlg         Boolean       @default(false) @map("half_flg")
+  delFlg          Boolean       @default(false) @map("del_flg")
+  insertUser      String        @default("SYSTEM") @map("insert_user")
+  insertDatetime  DateTime      @default(now()) @map("insert_datetime")
+  updateUser      String        @default("SYSTEM") @map("update_user")
+  updateDatetime  DateTime      @updatedAt @map("update_datetime")
+  vacationDays    TVacationDays @relation(fields: [employeeCode, employmentYears], references: [employeeCode, employmentYears])
+
+  @@map("t_vacation_history")
+}
