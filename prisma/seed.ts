@@ -239,14 +239,14 @@ async function main() {
   }
 
   // 6.5年以降のデータを50年まで追加
-  for (let i = 7; i <= 50; i += 1) {
-    await prisma.mVacationDays.create({
-      data: {
-        employmentYears: i + 0.5,
-        grantDays: 20,
-      },
-    });
-  }
+  // for (let i = 7; i <= 50; i += 1) {
+  //   await prisma.mVacationDays.create({
+  //     data: {
+  //       employmentYears: i + 0.5,
+  //       grantDays: 20,
+  //     },
+  //   });
+  // }
 
   // TVacationDays データの投入
   for (const vd of vacationDays) {
