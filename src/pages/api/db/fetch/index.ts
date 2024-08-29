@@ -33,7 +33,7 @@ export default async function handle(req, res) {
       employeeCode: result.employeeCode,
       name: result.name,
       joinDate: joinDate.format("YYYY/MM"),
-      updateDate: updateDate.startOf("month").format("MM/DD"),
+      updateDate: updateDate.format("MM/DD"),
       vacationDays: result.vacationDays.map((x) => {
         return {
           employeeCode: x.employeeCode,
