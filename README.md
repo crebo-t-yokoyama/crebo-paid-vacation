@@ -40,6 +40,8 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
 ```bash
+npx prisma generate
+
 npx prisma db push
 
 npx prisma studio
