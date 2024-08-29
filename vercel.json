@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/db/periodic",
-      "schedule": "0 15 28,29,30,31 * *"
+      "schedule": "0 15 * * *"
     }
   ]
 }
