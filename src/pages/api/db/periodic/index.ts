@@ -12,6 +12,8 @@ export default async function handle(req, res) {
     // 1.当月が更新月のユーザー取得 強制的に00:00:00:000扱い
     const now = dayjs().hour(0).minute(0).second(0).millisecond(0);
 
+    console.warn(now);
+
     // cronはUTCで起動
     // UTCで月末日の15時に起動しないといけない
     // cronで月末日の指定ができない
@@ -32,6 +34,7 @@ export default async function handle(req, res) {
         },
       },
     });
+    console.warn(mEmployees);
 
     const targetEmps = mEmployees.filter((mEmp) => {
       // 入社日 JSTに変換しているので 09:00
@@ -44,14 +47,17 @@ export default async function handle(req, res) {
       // ミリ秒まで合わせているので===で比較可能
       return now.diff(updateDate) === 0;
     });
+    console.warn(targetEmps);
 
     // 対象ユーザいなければ終了
     if (targetEmps.length < 1) {
+      console.warn("dddddddddddddddddddddddddd");
       res.json(null);
     }
 
     // 2.年次別日数テーブル更新
     const updateTargetEmp = targetEmps.filter((x) => x.vacationDays.length > 1);
+    console.warn("updateTargetEmp");
     const updateData = updateTargetEmp.map((emp) => {
       return {
         where: {
