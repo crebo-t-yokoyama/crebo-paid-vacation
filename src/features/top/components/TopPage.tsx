@@ -19,7 +19,7 @@ import { DatePicker } from "@/components/datepicker";
 import { LoadingOverlay } from "@/components/overlay";
 import { HistoryModal } from "@/features/history";
 
-const targetEmail = "yokoyama@crebo.co.jp";
+const targetEmail = "kuroki@crebo.co.jp";
 
 dayjs.locale(ja);
 

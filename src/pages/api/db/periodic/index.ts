@@ -37,7 +37,7 @@ export default async function handle(req, res) {
       // 入社日 JSTに変換しているので 09:00
       const joinDate = dayjs(mEmp.joinDate);
       // 半年後なので +6 month, year設定 ex.YYYY/MM/01 09:00:00
-      let updateDate = joinDate.add(6, "M").year(now.year());
+      let updateDate = joinDate.add(7, "M").year(now.year());
       // 強制的に00:00:00:000扱い
       updateDate = updateDate.hour(0).minute(0).second(0).millisecond(0);
 
