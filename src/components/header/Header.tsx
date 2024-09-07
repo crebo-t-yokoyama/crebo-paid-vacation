@@ -1,6 +1,5 @@
 import { HamburgerIcon } from "@chakra-ui/icons";
 import {
-  Avatar,
   Flex,
   IconButton,
   Menu,
@@ -10,9 +9,12 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { useRouter } from "next/router";
+import { signOut, useSession } from "next-auth/react";
 
 export const Header = () => {
   const router = useRouter();
+
+  const { data: session } = useSession();
 
   return (
     <Flex
@@ -23,12 +25,7 @@ export const Header = () => {
       alignItems="center"
     >
       <Flex alignItems="center" gap={4}>
-        <Avatar
-          size="sm"
-          name="Dan Abrahmov"
-          src="https://bit.ly/dan-abramov"
-        />
-        <Text>横山 太軌</Text>
+        <Text>{session?.user?.name}</Text>
       </Flex>
       <Menu>
         <MenuButton
@@ -39,7 +36,7 @@ export const Header = () => {
           _hover={{ bgColor: "transparent" }}
         />
         <MenuList>
-          <MenuItem>ログアウト</MenuItem>
+          <MenuItem onClick={() => signOut()}>ログアウト（未対応）</MenuItem>
         </MenuList>
       </Menu>
     </Flex>

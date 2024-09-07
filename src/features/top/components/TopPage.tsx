@@ -11,7 +11,8 @@ import {
 import { AxiosError } from "axios";
 import dayjs from "dayjs";
 import ja from "dayjs/locale/ja";
-import { useState } from "react";
+import { signIn, useSession } from "next-auth/react";
+import { useState, useEffect } from "react";
 
 import { useAcquisitionMutation } from "@/api/db/acquisition";
 import { useFetchQuery } from "@/api/db/fetch";
@@ -19,16 +20,21 @@ import { DatePicker } from "@/components/datepicker";
 import { LoadingOverlay } from "@/components/overlay";
 import { HistoryModal } from "@/features/history";
 
-const targetEmail = "kuroki@crebo.co.jp";
-
 dayjs.locale(ja);
 
 export const TopPage = () => {
+  const { data: session, status } = useSession();
+
   const toast = useToast();
 
   const [startDate, setStartDate] = useState(new Date());
 
-  const { data, isFetching, refetch } = useFetchQuery(targetEmail, {});
+  const { data, isFetching, refetch } = useFetchQuery(
+    session?.user?.email ?? "",
+    {
+      enabled: session?.user?.email ? true : false,
+    }
+  );
 
   const acquisitionMutation = useAcquisitionMutation();
 
@@ -60,6 +66,22 @@ export const TopPage = () => {
         });
       });
   };
+
+  const loading = status === "loading";
+
+  useEffect(() => {
+    if (!loading && !session) {
+      signIn("azure-ad"); // プロバイダーを明示的に指定
+    }
+  }, [session, loading]);
+
+  if (loading) {
+    return <p>Loading...</p>; // ローディング中の表示
+  }
+
+  if (!session) {
+    return null; // 未ログイン時は何も表示しない（リダイレクト処理が行われる）
+  }
 
   return (
     <>
