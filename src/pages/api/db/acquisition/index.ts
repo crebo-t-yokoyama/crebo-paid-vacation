@@ -45,19 +45,19 @@ export default async function handle(req, res) {
 
       console.warn("updateDate: " + updateDate.toISOString());
 
-      if (updateDate.isBefore(today)) {
-        const nextUpdateDate = updateDate.add(1, "y");
+      const nextUpdateDate = !updateDate.isAfter(today)
+        ? updateDate.add(1, "y")
+        : updateDate;
 
-        console.warn("nextUpdateDate: " + nextUpdateDate.toISOString());
+      console.warn("nextUpdateDate: " + nextUpdateDate.toISOString());
 
-        if (target.isAfter(nextUpdateDate)) {
-          // 取得予定日付が、次回有休更新日以降であればエラーとする
-          return res.status(400).json({
-            success: false,
-            message: "次回有休更新日移行の日付は取得できません。",
-            code: "OVER_RANGE_DATE",
-          });
-        }
+      if (!target.isBefore(nextUpdateDate)) {
+        // 取得予定日付が、次回有休更新日以降であればエラーとする
+        return res.status(400).json({
+          success: false,
+          message: "次回有休更新日移行の日付は取得できません。",
+          code: "OVER_RANGE_DATE",
+        });
       }
     } else {
       return res.status(400).json({
