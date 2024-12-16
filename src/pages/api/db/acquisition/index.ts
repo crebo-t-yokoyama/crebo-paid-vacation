@@ -14,6 +14,7 @@ export default async function handle(req, res) {
       .minute(0)
       .second(0)
       .millisecond(0);
+
     // acquisitionDateを解析してISO 8601形式に変換
     const parsedDate = target.toISOString();
 
@@ -23,16 +24,12 @@ export default async function handle(req, res) {
     });
 
     if (mEmployee) {
-      console.warn("target: " + target.toISOString());
-
       const today = dayjs()
         .add(9, "h")
         .hour(9)
         .minute(0)
         .second(0)
         .millisecond(0);
-
-      console.warn("today: " + today.toISOString());
 
       const joinDate = dayjs(mEmployee.joinDate);
       const updateDate = joinDate
@@ -43,13 +40,9 @@ export default async function handle(req, res) {
         .second(0)
         .millisecond(0);
 
-      console.warn("updateDate: " + updateDate.toISOString());
-
       const nextUpdateDate = !updateDate.isAfter(today)
         ? updateDate.add(1, "y")
         : updateDate;
-
-      console.warn("nextUpdateDate: " + nextUpdateDate.toISOString());
 
       if (!target.isBefore(nextUpdateDate)) {
         // 取得予定日付が、次回有休更新日以降であればエラーとする
