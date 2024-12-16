@@ -9,13 +9,63 @@ export default async function handle(req, res) {
   try {
     const { acquisitionDate, employeeCode, halfFlg } = req.body;
 
-    // acquisitionDateを解析してISO 8601形式に変換
-    const parsedDate = dayjs(acquisitionDate, "YYYY/M/D")
+    const target = dayjs(acquisitionDate, "YYYY/M/D")
       .hour(9)
       .minute(0)
       .second(0)
-      .millisecond(0)
-      .toISOString();
+      .millisecond(0);
+    // acquisitionDateを解析してISO 8601形式に変換
+    const parsedDate = target.toISOString();
+
+    // 次回有休更新日を取得
+    const mEmployee = await prisma.mEmployee.findFirst({
+      where: { employeeCode },
+    });
+
+    if (mEmployee) {
+      console.warn("target: " + target);
+
+      const today = dayjs()
+        .add(9, "h")
+        .hour(9)
+        .minute(0)
+        .second(0)
+        .millisecond(0);
+
+      console.warn("today: " + today);
+
+      const joinDate = dayjs(mEmployee.joinDate);
+      const updateDate = joinDate
+        .add(6, "M")
+        .year(today.get("y"))
+        .hour(9)
+        .minute(0)
+        .second(0)
+        .millisecond(0);
+
+      console.warn("updateDate: " + updateDate);
+
+      if (updateDate.isBefore(today)) {
+        const nextUpdateDate = updateDate.add(1, "y");
+
+        console.warn("nextUpdateDate: " + nextUpdateDate);
+
+        if (target.isAfter(nextUpdateDate)) {
+          // 取得予定日付が、次回有休更新日以降であればエラーとする
+          return res.status(400).json({
+            success: false,
+            message: "次回有休更新日移行の日付は取得できません。",
+            code: "OVER_RANGE_DATE",
+          });
+        }
+      }
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: "ユーザーデータが取得できません",
+        code: "USER_NOT_FOUND_ERROR",
+      });
+    }
 
     // 年次別取得
     const tVacationDays = await prisma.tVacationDays.findMany({
