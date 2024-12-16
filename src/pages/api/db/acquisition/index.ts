@@ -23,7 +23,7 @@ export default async function handle(req, res) {
     });
 
     if (mEmployee) {
-      console.warn("target: " + target);
+      console.warn("target: " + target.toISOString());
 
       const today = dayjs()
         .add(9, "h")
@@ -32,7 +32,7 @@ export default async function handle(req, res) {
         .second(0)
         .millisecond(0);
 
-      console.warn("today: " + today);
+      console.warn("today: " + today.toISOString());
 
       const joinDate = dayjs(mEmployee.joinDate);
       const updateDate = joinDate
@@ -43,12 +43,12 @@ export default async function handle(req, res) {
         .second(0)
         .millisecond(0);
 
-      console.warn("updateDate: " + updateDate);
+      console.warn("updateDate: " + updateDate.toISOString());
 
       if (updateDate.isBefore(today)) {
         const nextUpdateDate = updateDate.add(1, "y");
 
-        console.warn("nextUpdateDate: " + nextUpdateDate);
+        console.warn("nextUpdateDate: " + nextUpdateDate.toISOString());
 
         if (target.isAfter(nextUpdateDate)) {
           // 取得予定日付が、次回有休更新日以降であればエラーとする
